@@ -1,4 +1,4 @@
-# Ritchie Formula Repo
+# Ritchie Formula Github Insights Repository
 
 ![Rit banner](/docs/img/ritchie-banner.png)
 
@@ -12,22 +12,15 @@ This repository contains rit formulas which can be executed by the [ritchie-cli]
 
 ## Use Formulas
 
+To import this repository, you need to have [Ritchie CLI installed](https://docs.ritchiecli.io/getting-started/installation) 
+
+Then, you can use the `rit add repo` command manually, or execute the command line below directly on your terminal:
+
 ```bash
- rit add repo
- Select your provider:
-  > Github
-    Gilab
- Repository name: {{some_repo_name}}
- Repository URL: {{this_repo_url}}
- Is a private repository?
-    no
-  > yes
- Personal access tokens: {{git_personal_token}}
- Select a tag version:
-  > 1.0.1
-    1.0.0
- Set the priority: 2
+echo '{"provider":"Github", "name":"insights", "version":"2.0.0", "url":"https://github.com/GuillaumeFalourd/formulas-insights", "token": null, "priority":1}' | rit add repo --stdin
 ```
+
+Finally, you can check if the repository has been imported correctly by executing the `rit list repo` command.
 
 ## Build and test formulas locally
 
