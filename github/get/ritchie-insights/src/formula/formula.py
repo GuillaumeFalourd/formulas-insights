@@ -35,8 +35,15 @@ def Run(user, key, contribution):
             url, auth=HTTPBasicAuth(user, key), 
         ).json()
 
-        forks = repo_stats["items"][0]["forks_count"]
-        stars = repo_stats["items"][0]["stargazers_count"]
+        try:
+            forks = repo_stats["items"][0]["forks_count"]
+        except IndexError:
+            forks = "-"
+
+        try:
+            stars = repo_stats["items"][0]["stargazers_count"]
+        except IndexError:
+            stars = "-"  
 
         insights.append(
             {
