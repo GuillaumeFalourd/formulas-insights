@@ -1,4 +1,4 @@
-# Ritchie Formula Github Insights Repository
+# Ritchie Formulas Repository - Insights
 
 ![Rit banner](/docs/img/ritchie-banner.png)
 
