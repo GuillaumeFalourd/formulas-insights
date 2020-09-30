@@ -12,7 +12,7 @@ def Run(user, key, contribution):
     insights = []
     base_url = f"https://api.github.com/repos/{user}/"
 
-    print(f"🐙 Getting traffic insights for {user}'s repos:")
+    print(f"🐙 Getting insights for {user}'s repos:")
     for repo in repo_names:
         print(f"\t- github.com/{user}/{repo}/")
         repo_url = urljoin(base_url, repo + "/")

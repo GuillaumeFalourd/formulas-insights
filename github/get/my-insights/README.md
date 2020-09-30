@@ -23,4 +23,4 @@ It will return datas such as:
 
 ## Execution sample
 
-<img class="special-img-class" src="/github/get/my-insights/docs/img/my-insights-sample.png" />
+<img class="special-img-class" src="/github/get/my-insights/docs/img/rit-github-my-insights-sample.png" />

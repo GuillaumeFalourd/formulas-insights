@@ -1,0 +1,33 @@
+{
+  "dockerImageBuilder": "cimg/python:3.8",
+  "inputs": [
+    {
+      "name": "git_username",
+      "type": "CREDENTIAL_GITHUB_USERNAME"
+    },
+    {
+      "name": "git_token",
+      "type": "CREDENTIAL_GITHUB_TOKEN"
+    },
+    {
+      "label": "What repositories insights do you want ?",
+      "name": "insight_type",
+      "type": "text",
+      "items": [
+        "Own",
+        "ZupIT - CharlesCD",
+        "ZupIT - Beagle",
+        "ZupIT - Ritchie"
+      ]
+    },
+    {
+      "label": "Do you want contribution details?",
+      "name": "contribution",
+      "type": "text",
+      "items": [
+        "yes",
+        "no"
+      ]
+    }
+  ]
+}

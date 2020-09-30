@@ -14,7 +14,7 @@ def Run(user, key, contribution):
     contributors = []
     base_url_zup = f"https://api.github.com/repos/ZupIT/"
 
-    print(f"🐙 Getting traffic insights for ZupIT's repos:")
+    print(f"🐙 Getting insights for ZupIT's repos:")
     for repo in repo_names_zup:
         print(f"\t- github.com/ZupIT/{repo}/")
         repo_url_zup = urljoin(base_url_zup, repo + "/")
