@@ -20,6 +20,7 @@ It will return datas such as:
 - contributors (usernames details if needed)
 - forks
 - stars
+- watchers
 
 ## Execution sample
 

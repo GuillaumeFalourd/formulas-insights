@@ -16,6 +16,7 @@ It will return datas such as:
 - contributors (usernames details if needed)
 - forks
 - stars
+- watchers
 
 This formula encapsulates other formulas in this repository:
 - rit github get my-insights
