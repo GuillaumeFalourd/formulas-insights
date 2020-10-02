@@ -26,4 +26,4 @@ This formula encapsulates other formulas in this repository:
 
 ## Execution sample
 
-<img class="special-img-class" src="/github/insights/docs/img/rit-github-insights-sample.png" />
+<img class="special-img-class" src="/github/insights/docs/img/rit-github-insights.png" />
