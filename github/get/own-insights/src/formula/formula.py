@@ -14,23 +14,23 @@ def Run(user, key, contribution):
 
     print(f"🐙 Getting insights for {user}'s repos:")
     for repo in repo_names:
-         print(f"\t- github.com/ZupIT/{repo}/")
-        repo_url_zup = urljoin(base_url_zup, repo + "/")
+        print(f"\t- github.com/{user}/{repo}/")
+        repo_url = urljoin(base_url, repo + "/")
         traffic = requests.get(
-            urljoin(repo_url_zup, "traffic/views",), auth=HTTPBasicAuth(user, key),
+            urljoin(repo_url, "traffic/views",), auth=HTTPBasicAuth(user, key),
         ).json()
 
         clones = requests.get(
-            urljoin(repo_url_zup, "traffic/clones",), auth=HTTPBasicAuth(user, key),
+            urljoin(repo_url, "traffic/clones",), auth=HTTPBasicAuth(user, key),
         ).json()
 
         contributors = requests.get(
-            urljoin(repo_url_zup, "contributors",), auth=HTTPBasicAuth(user, key),
+            urljoin(repo_url, "contributors",), auth=HTTPBasicAuth(user, key),
         ).json()
 
-        url = f"https://api.github.com/repos/ZupIT/{repo}"
-        repo_stats = requests.get( 
-            url, auth=HTTPBasicAuth(user, key), 
+        url = f"https://api.github.com/repos/{user}/{repo}"
+        repo_stats = requests.get(
+            url, auth=HTTPBasicAuth(user, key),
         ).json()
 
         try:
