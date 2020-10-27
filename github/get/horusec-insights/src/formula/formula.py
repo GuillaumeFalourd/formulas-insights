@@ -8,7 +8,7 @@ from requests.auth import HTTPBasicAuth
 
 def Run(user, key, contribution):
     repos_url_zup = f"https://api.github.com/users/ZupIT/repos"
-    repo_names_zup = ["beagle", "beagle-web-react", "beagle-web-core", "beagle-web-angular"]
+    repo_names_zup = ["horusec", "horusec-engine-docs"]
     
     insights = []
     contributors = []
@@ -31,8 +31,8 @@ def Run(user, key, contribution):
         ).json()
 
         url = f"https://api.github.com/repos/ZupIT/{repo}"
-        repo_stats = requests.get(
-            url, auth=HTTPBasicAuth(user, key),
+        repo_stats = requests.get( 
+            url, auth=HTTPBasicAuth(user, key), 
         ).json()
 
         try:

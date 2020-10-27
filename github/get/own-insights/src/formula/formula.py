@@ -14,45 +14,60 @@ def Run(user, key, contribution):
 
     print(f"🐙 Getting insights for {user}'s repos:")
     for repo in repo_names:
-        print(f"\t- github.com/{user}/{repo}/")
-        repo_url = urljoin(base_url, repo + "/")
+         print(f"\t- github.com/ZupIT/{repo}/")
+        repo_url_zup = urljoin(base_url_zup, repo + "/")
         traffic = requests.get(
-            urljoin(repo_url, "traffic/views",), auth=HTTPBasicAuth(user, key),
+            urljoin(repo_url_zup, "traffic/views",), auth=HTTPBasicAuth(user, key),
         ).json()
 
         clones = requests.get(
-            urljoin(repo_url, "traffic/clones",), auth=HTTPBasicAuth(user, key),
-        ).json()["count"]
-
-        contributors = requests.get(
-            urljoin(repo_url, "contributors",), auth=HTTPBasicAuth(user, key),
+            urljoin(repo_url_zup, "traffic/clones",), auth=HTTPBasicAuth(user, key),
         ).json()
 
-        url = f"https://api.github.com/repos/{user}/{repo}"
+        contributors = requests.get(
+            urljoin(repo_url_zup, "contributors",), auth=HTTPBasicAuth(user, key),
+        ).json()
+
+        url = f"https://api.github.com/repos/ZupIT/{repo}"
         repo_stats = requests.get( 
             url, auth=HTTPBasicAuth(user, key), 
         ).json()
 
         try:
+            clones = clones["count"]
+        except (IndexError, KeyError) :
+            clones = "-"
+
+        try:
             forks = repo_stats["forks_count"]
-        except IndexError:
+        except (IndexError, KeyError):
             forks = "-"
 
         try:
             stars = repo_stats["stargazers_count"]
-        except IndexError:
+        except (IndexError, KeyError):
             stars = "-"
 
         try:
             watchers = repo_stats["subscribers_count"]
-        except IndexError:
-            stars = "-"   
+        except (IndexError, KeyError):
+            stars = "-"
+
+        try:
+            views = traffic["count"]
+        except (IndexError, KeyError):
+            views = "-"
+
+        try:
+            uniques = traffic["uniques"]
+        except (IndexError, KeyError):
+            uniques = "-"
 
         insights.append(
             {
                 "repo": repo,
-                "views": traffic["count"],
-                "uniques": traffic["uniques"],
+                "views": views,
+                "uniques": uniques,
                 "clones": clones,
                 "contributors": len(contributors),
                 "contributors_list": contributors,

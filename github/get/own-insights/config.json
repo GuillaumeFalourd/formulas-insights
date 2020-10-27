@@ -10,18 +10,6 @@
       "type": "CREDENTIAL_GITHUB_TOKEN"
     },
     {
-      "label": "What repositories insights do you want ?",
-      "name": "insight_type",
-      "type": "text",
-      "items": [
-        "Own",
-        "ZupIT - Beagle",
-        "ZupIT - Charles",
-        "ZupIT - Horusec",
-        "ZupIT - Ritchie"
-      ]
-    },
-    {
       "label": "Do you want contribution details?",
       "name": "contribution",
       "type": "text",

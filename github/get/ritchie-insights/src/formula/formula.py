@@ -9,7 +9,7 @@ from requests.auth import HTTPBasicAuth
 def Run(user, key, contribution):
     repos_url_zup = f"https://api.github.com/users/ZupIT/repos"
     repo_names_zup = ["ritchie-cli", "ritchie-formulas", "ritchie-formulas-demo", "ritchie-gitbook"]
-    
+
     insights = []
     contributors = []
     base_url_zup = f"https://api.github.com/repos/ZupIT/"
@@ -24,7 +24,7 @@ def Run(user, key, contribution):
 
         clones = requests.get(
             urljoin(repo_url_zup, "traffic/clones",), auth=HTTPBasicAuth(user, key),
-        ).json()["count"]
+        ).json()
 
         contributors = requests.get(
             urljoin(repo_url_zup, "contributors",), auth=HTTPBasicAuth(user, key),
@@ -36,25 +36,40 @@ def Run(user, key, contribution):
         ).json()
 
         try:
+            clones = clones["count"]
+        except (IndexError, KeyError) :
+            clones = "-"
+
+        try:
             forks = repo_stats["forks_count"]
-        except IndexError:
+        except (IndexError, KeyError):
             forks = "-"
 
         try:
             stars = repo_stats["stargazers_count"]
-        except IndexError:
+        except (IndexError, KeyError):
             stars = "-"
 
         try:
             watchers = repo_stats["subscribers_count"]
-        except IndexError:
-            stars = "-"   
+        except (IndexError, KeyError):
+            stars = "-"
+
+        try:
+            views = traffic["count"]
+        except (IndexError, KeyError):
+            views = "-"
+
+        try:
+            uniques = traffic["uniques"]
+        except (IndexError, KeyError):
+            uniques = "-"
 
         insights.append(
             {
                 "repo": repo,
-                "views": traffic["count"],
-                "uniques": traffic["uniques"],
+                "views": views,
+                "uniques": uniques,
                 "clones": clones,
                 "contributors": len(contributors),
                 "contributors_list": contributors,
