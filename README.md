@@ -22,10 +22,6 @@ echo '{"provider":"Github", "name":"insights", "version":"2.7.0", "url":"https:/
 
 Finally, you can check if the repository has been imported correctly by executing the `rit list repo` command.
 
-## Execution sample
-
-<img class="special-img-class" src="/github/insights/docs/img/rit-github-insights.png" />
-
 ## Build and test formulas locally
 
 ```bash
