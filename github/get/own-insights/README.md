@@ -21,7 +21,3 @@ It will return datas such as:
 - forks
 - stars
 - watchers
-
-## Execution sample
-
-<img class="special-img-class" src="/github/get/my-insights/docs/img/rit-github-my-insights-sample.png" />

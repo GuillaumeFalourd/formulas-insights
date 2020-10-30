@@ -1,0 +1,13 @@
+{
+  "dockerImageBuilder": "cimg/python:3.8",
+  "inputs": [
+    {
+      "name": "linkedin_email",
+      "type": "CREDENTIAL_LINKEDIN_EMAIL"
+    },
+    {
+      "name": "linkedin_password",
+      "type": "CREDENTIAL_LINKEDIN_PASSWORD"
+    }
+  ]
+}

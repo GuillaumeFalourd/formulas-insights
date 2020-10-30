@@ -17,14 +17,22 @@ To import this repository, you need to have [Ritchie CLI installed](https://docs
 Then, you can use the `rit add repo` command manually, or execute the command line below directly on your terminal:
 
 ```bash
-echo '{"provider":"Github", "name":"insights", "version":"2.7.1", "url":"https://github.com/GuillaumeFalourd/formulas-insights", "token": null, "priority":1}' | rit add repo --stdin
+echo '{"provider":"Github", "name":"insights", "version":"2.8.0", "url":"https://github.com/GuillaumeFalourd/formulas-insights", "token": null, "priority":1}' | rit add repo --stdin
 ```
 
 Finally, you can check if the repository has been imported correctly by executing the `rit list repo` command.
 
-## Sample execution
+## Samples execution
 
-![Demo](/docs/img/rit-github-insights.png)
+![Demo Github](/docs/img/rit-github-insights.png)
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+![Demo Github](/docs/img/rit-github-get-user.png)
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+![Demo LinkedIn](/docs/img/rit-linkedin-get-viewers.png)
 
 ## Build and test formulas locally
 
