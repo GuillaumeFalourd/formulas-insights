@@ -7,9 +7,12 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 def Run(user, key, contribution):
-    repos_url_zup = f"https://api.github.com/users/ZupIT/repos"
-    repo_names_zup = ["beagle", "beagle-web-react", "beagle-web-core", "beagle-web-angular"]
-    
+    repo_names_zup = [
+        "beagle",
+        "beagle-web-react",
+        "beagle-web-core",
+        "beagle-web-angular"
+    ]
     insights = []
     contributors = []
     base_url_zup = f"https://api.github.com/repos/ZupIT/"
@@ -109,82 +112,61 @@ def print_contribution(insights, user, key):
                 print("🚫 Sorry: We could't retrieve the contributors list for this repository...\n")
 
 def get_contributor_details(user, key, contributor):
-    events = requests.get(
-        ('https://api.github.com/users/%s/events?per_page=100' % (contributor["login"])), auth=HTTPBasicAuth(user, key),
-    ).json()
-
     github_user = requests.get(
         ('https://api.github.com/users/%s' % (contributor["login"])), auth=HTTPBasicAuth(user, key),
     ).json()
 
-    contributor["name"] = github_user["name"]
+    if "message" in github_user and github_user["message"] == "Not Found":
+        print ("Github User does not exist.")
 
-    got_verified_email = get_github_datas(events, contributor)
+    else:
+        contributor["email"] = github_user["email"]
+        contributor["name"] = github_user["name"]
 
-    check_email_and_name_datas(contributor)
+        if contributor["email"] is None or contributor["name"] is None:
 
-    if not got_verified_email and contributor["email"] == "-" or contributor["name"] == "-" or contributor["name"] == contributor["login"]:
-        extract_undefined_datas(events, contributor)
+            events = requests.get(
+                ('https://api.github.com/users/%s/events?per_page=100' % (contributor["login"])), auth=HTTPBasicAuth(user, key),
+            ).json()
 
-def get_github_datas(events, contributor):
-    got_verified_email = False
+            if contributor["name"] is None:
+                contributor["name"] = get_name(events, contributor["login"])
+
+            if contributor["email"] is None:
+                contributor["email"] = get_email(events, contributor["login"], contributor["name"])
+
+def get_email(events, login, name):
+    email = "-"
+    found_email = False
     for event in events:
-        if not got_verified_email and event["type"] == "PushEvent" and event["payload"] is not None:
+        if not found_email and event["type"] == "PushEvent" and event["payload"] is not None:
             payload = event["payload"]
             for commit in payload["commits"]:
-                if commit["author"] is not None:
+                if not found_email and commit["author"] is not None:
                     author = commit["author"]
-                    try:
-                        if author["name"] in contributor["name"] and "github" not in author["email"]:
-                            contributor["email"] = author["email"]
-                            got_verified_email = True
+                    if not found_email and author["name"] in login and "github" not in author["email"]:
+                        email = author["email"]
+                        found_email = True
+                    if not found_email and author["name"] in name and "github" not in author["email"]:
+                        email = author["email"]
+                        found_email = True
+                    if not found_email and name.split()[0].lower() in author["name"] and "github" not in author["email"]:
+                        email = author["email"] + " *" # The * represente an email that is related but not necessary from this user account.
+    return email
 
-                        if contributor["email"] is not None and author["name"] in contributor["login"] and "github" not in author["email"]:
-                            contributor["email"] = author["email"]
-                            got_verified_email = True
-
-                    except (KeyError, TypeError):
-                        if author["name"] in (contributor["login"], contributor["name"]) and "github" not in author["email"]:
-                            contributor["email"] = author["email"]
-
-    return got_verified_email
-
-def check_email_and_name_datas(contributor):
-    try:
-        if contributor["name"] is None:
-            contributor["name"] = "-"
-    except (IndexError, TypeError, KeyError):
-        contributor["name"] = "-"
-
-    try:
-        if contributor["email"] is None:
-            contributor["email"] = "-"
-    except (IndexError, TypeError, KeyError):
-        contributor["email"] = "-"
-
-def extract_undefined_datas(events, contributor):
-        for event in events:
-            if event["type"] == "PushEvent" and event["payload"] is not None and event["actor"] is not None:
-                actor = event["actor"]
+def get_name(events, login):
+    name = "-"
+    found_name = False
+    for event in events:
+        if not found_name and event["type"] == "PushEvent" and event["actor"]is not None and event["payload"] is not None:
+            actor = event["actor"]
+            if actor["login"] == login:
                 payload = event["payload"]
-                if actor["login"] == contributor["login"]:
+                if len(payload["commits"]) == 1:
                     for commit in payload["commits"]:
-                        if commit["author"] is not None:
+                        if not found_name and commit["author"] is not None:
                             author = commit["author"]
-                            try:
-                                if contributor["email"] == "-" and "github" not in author["email"] :
-                                        contributor["email"] = author["email"]
-
-                            except (KeyError, TypeError):
-                                contributor["email"] = "-"
-
-                            if contributor["name"] == "-" or contributor["name"] == contributor["login"]:
-                                contributor["name"] = author["name"]
-
-def get_contributor_email(event, contributor):
-    if event["type"] == "PushEvent" and event["payload"] is not None:
-        payload = event["payload"]
-        for commit in payload["commits"]:
-            if commit["author"] is not None:
-                author = commit["author"]
-                contributor["email"] = author["email"]
+                            if not found_name and author["email"] is not None and "github" not in author["email"]:
+                                    name = author["name"]
+                                    found_name = True
+    return name

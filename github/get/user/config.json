@@ -48,6 +48,14 @@
       "default": "no",
       "tutorial": "A .txt file can be saved on the folder where the formula is executed.",
       "required": false
+    },
+    {
+      "name": "rit_git_username",
+      "type": "CREDENTIAL_GITHUB_USERNAME"
+    },
+    {
+      "name": "rit_git_token",
+      "type": "CREDENTIAL_GITHUB_TOKEN"
     }
   ]
 }

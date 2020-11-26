@@ -1,84 +1,89 @@
 #!/usr/bin/env python3
 
 import os
+import re
+
 from urllib.parse import urljoin
 
 import requests
+from requests import get
 from requests.auth import HTTPBasicAuth
 
-def Run(user, key, contribution):
-    repo_names_zup = [
-        "charlescd",
-        "charlescd-docs"
-    ]
+import json
+
+regex_pattern = r"(?<=\+)(.*)"
+
+def Run(user, key, repository, contribution):
+    user_repo = re.sub('https://github.com/', '', repository)
+    datas = user_repo.split(sep ='/', maxsplit=2)
+    owner = datas[0]
+    repo = datas[1]
     insights = []
     contributors = []
-    base_url_zup = f"https://api.github.com/repos/ZupIT/"
+    base_url = f"https://api.github.com/repos/{owner}/"
 
-    print(f"🐙 Getting insights for ZupIT's repos:")
-    for repo in repo_names_zup:
-        print(f"\t- github.com/ZupIT/{repo}/")
-        repo_url_zup = urljoin(base_url_zup, repo + "/")
-        traffic = requests.get(
-            urljoin(repo_url_zup, "traffic/views",), auth=HTTPBasicAuth(user, key),
-        ).json()
+    print(f"🐙 Getting insights for {repository}:")
+    repo_url = urljoin(base_url, repo + "/")
+    traffic = requests.get(
+        urljoin(repo_url, "traffic/views",), auth=HTTPBasicAuth(user, key),
+    ).json()
 
-        clones = requests.get(
-            urljoin(repo_url_zup, "traffic/clones",), auth=HTTPBasicAuth(user, key),
-        ).json()
+    clones = requests.get(
+        urljoin(repo_url, "traffic/clones",), auth=HTTPBasicAuth(user, key),
+    ).json()
 
-        contributors = requests.get(
-            urljoin(repo_url_zup, "contributors",), auth=HTTPBasicAuth(user, key),
-        ).json()
+    contributors = requests.get(
+        urljoin(repo_url, "contributors",), auth=HTTPBasicAuth(user, key),
+    ).json()
 
-        url = f"https://api.github.com/repos/ZupIT/{repo}"
-        repo_stats = requests.get(
-            url, auth=HTTPBasicAuth(user, key),
-        ).json()
+    url = f"https://api.github.com/repos/{owner}/{repo}"
+    repo_stats = requests.get(
+        url, auth=HTTPBasicAuth(user, key),
+    ).json()
 
-        try:
-            clones = clones["count"]
-        except (IndexError, KeyError) :
-            clones = "-"
+    try:
+        clones = clones["count"]
+    except (IndexError, KeyError) :
+        clones = "-"
 
-        try:
-            forks = repo_stats["forks_count"]
-        except (IndexError, KeyError):
-            forks = "-"
+    try:
+        forks = repo_stats["forks_count"]
+    except (IndexError, KeyError):
+        forks = "-"
 
-        try:
-            stars = repo_stats["stargazers_count"]
-        except (IndexError, KeyError):
-            stars = "-"
+    try:
+        stars = repo_stats["stargazers_count"]
+    except (IndexError, KeyError):
+        stars = "-"
 
-        try:
-            watchers = repo_stats["subscribers_count"]
-        except (IndexError, KeyError):
-            watchers = "-"
+    try:
+        watchers = repo_stats["subscribers_count"]
+    except (IndexError, KeyError):
+        watchers = "-"
 
-        try:
-            views = traffic["count"]
-        except (IndexError, KeyError):
-            views = "-"
+    try:
+        views = traffic["count"]
+    except (IndexError, KeyError):
+        views = "-"
 
-        try:
-            uniques = traffic["uniques"]
-        except (IndexError, KeyError):
-            uniques = "-"
+    try:
+        uniques = traffic["uniques"]
+    except (IndexError, KeyError):
+        uniques = "-"
 
-        insights.append(
-            {
-                "repo": repo,
-                "views": views,
-                "uniques": uniques,
-                "clones": clones,
-                "contributors": len(contributors),
-                "contributors_list": contributors,
-                "forks": forks,
-                "stars": stars,
-                "watchers": watchers,
-            }
-        )
+    insights.append(
+        {
+            "repo": repo,
+            "views": views,
+            "uniques": uniques,
+            "clones": clones,
+            "contributors": len(contributors),
+            "contributors_list": contributors,
+            "forks": forks,
+            "stars": stars,
+            "watchers": watchers,
+        }
+    )
 
     print("\n-------------------------------------------------------------------------------------------------------")
     print(f'{"Repository":25} {"Views":^10} {"Uniques":^10} {"Clones":^10} {"Contributors":^10} {"Forks":^10} {"Stars":^10} {"Watchers":^10}')

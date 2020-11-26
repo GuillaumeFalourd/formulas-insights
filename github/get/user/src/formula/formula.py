@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 import json
 import requests
-import sys
+from requests.auth import HTTPBasicAuth
 import os
 
 api_url_base = 'https://api.github.com/'
 headers = {'Content-Type': 'application/json', 'User-Agent': 'Python Student', 'Accept': 'application/vnd.github.v3+json'}
 
-def Run(username, repo_details, keep_file):
+def Run(username, repo_details, keep_file, user, key):
     # Print User details
     try:
         user_details = get_user_details(username) # It's a binary string
@@ -26,6 +26,18 @@ def Run(username, repo_details, keep_file):
 
         # Load the JSON to a Python list & dump it back out as formatted JSON
         user_detail_dict = json.loads(user_in_json)
+
+        if user_detail_dict['email'] is None or user_detail_dict['name'] is None:
+
+            events = requests.get(
+                ('https://api.github.com/users/%s/events?per_page=100' % (username)), auth=HTTPBasicAuth(user, key),
+            ).json()
+
+            if user_detail_dict['name'] is None:
+                user_detail_dict['name'] = get_name(events, username)
+
+            if user_detail_dict['email'] is None:
+                user_detail_dict['email'] = get_email(events, username, user_detail_dict['name'])
 
         user_file.write("\n" + "="*10 + " User details of username: " + username + " " + "="*10 + "\n" )
         user_file.write("🔅 User Name: {}".format(user_detail_dict['name']) + "\n")
@@ -47,7 +59,7 @@ def Run(username, repo_details, keep_file):
         if repo_list is not None:
             repo_in_json = repo_list.decode('utf-8') # convert it to utf-8 encoded json string
 
-            # Load the JSON to a Python list & dump it back out as formatted JSON 
+            # Load the JSON to a Python list & dump it back out as formatted JSON
             repo_list = json.loads(repo_in_json)
             user_file.write("\n" + "="*10 + " Repo details of username: " + username + " " + "="*10 + "\n")
 
@@ -93,3 +105,39 @@ def get_repos(username):
     else:
         print('[!] HTTP {0} calling [{1}]'.format(response.status_code, api_url_base))
         return None
+
+def get_name(events, username):
+    name = "-"
+    found_name = False
+    for event in events:
+        if not found_name and event["type"] == "PushEvent" and event["actor"] is not None and event["payload"] is not None:
+            actor = event["actor"]
+            if actor["login"] == username:
+                payload = event["payload"]
+                if len(payload["commits"]) == 1:
+                    for commit in payload["commits"]:
+                        if not found_name and commit["author"] is not None:
+                            author = commit["author"]
+                            if not found_name and author["email"] is not None and "github" not in author["email"]:
+                                    name = author["name"]
+                                    found_name = True
+    return name
+
+def get_email(events, username, name):
+    email = "-"
+    found_email = False
+    for event in events:
+        if not found_email and event["type"] == "PushEvent" and event["payload"] is not None:
+            payload = event["payload"]
+            for commit in payload["commits"]:
+                if not found_email and commit["author"] is not None:
+                    author = commit["author"]
+                    if not found_email and author["name"] in username and "github" not in author["email"]:
+                        email = author["email"]
+                        found_email = True
+                    if not found_email and author["name"] in name and "github" not in author["email"]:
+                        email = author["email"]
+                        found_email = True
+                    if not found_email and name.split()[0].lower() in author["name"] and "github" not in author["email"]:
+                        email = author["email"] + " *" # The * represente an email that is related but not necessary from this user account.
+    return email
