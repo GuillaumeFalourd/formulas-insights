@@ -139,5 +139,5 @@ def get_email(events, username, name):
                         email = author["email"]
                         found_email = True
                     if not found_email and name.split()[0].lower() in author["name"] and "github" not in author["email"]:
-                        email = author["email"] + " *" # The * represente an email that is related but not necessary from this user account.
+                        email = author["email"] + " *" # The * represents an email that is related but not necessary from this user account.
     return email
