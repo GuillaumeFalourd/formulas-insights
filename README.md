@@ -36,7 +36,9 @@ Finally, you can check if the repository has been imported correctly by executin
 
 ## Build and test formulas locally
 
-```bash rit build formula```
+```bash 
+rit build formula
+```
 
 ## Contribute to the repository with your formulas
 
