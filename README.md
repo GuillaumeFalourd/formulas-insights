@@ -34,12 +34,6 @@ Finally, you can check if the repository has been imported correctly by executin
 
 ![Demo LinkedIn](/docs/img/rit-linkedin-get-viewers.png)
 
-## Build and test formulas locally
-
-```bash 
-rit build formula
-```
-
 ## Contribute to the repository with your formulas
 
 1. Fork the repository
