@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 from colored import fg, attr
 
-import requests # pip install requests
-from bs4 import BeautifulSoup # pip install beautifulsoup4
-import re # module for regular expression activities
-import getpass # invisible password in terminal
+import requests
+from bs4 import BeautifulSoup
+import re
+import getpass
 import sys
 
 def Run(email, password):

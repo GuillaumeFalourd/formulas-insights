@@ -11,8 +11,6 @@ from requests.auth import HTTPBasicAuth
 
 import json
 
-regex_pattern = r"(?<=\+)(.*)"
-
 def Run(user, key, repository, contribution):
     user_repo = re.sub('https://github.com/', '', repository)
     datas = user_repo.split(sep ='/', maxsplit=2)
