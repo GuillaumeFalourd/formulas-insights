@@ -7,7 +7,7 @@ import sys
 import httpx
 
 def run(doc_link):
-    print("Getting Google Doc insights")
+    print("\033[1m \033[95m 🔎 Getting Google Document insights...\033[0m")
     doc_id = ''.join([x for x in doc_link.split("?")[0].split("/") if len(x) == 44])
     if doc_id:
         print(f"\nDocument ID : {doc_id}\n")
