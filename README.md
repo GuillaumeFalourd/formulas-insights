@@ -32,6 +32,10 @@ Finally, you can check if the repository has been imported correctly by executin
 
 ![Demo LinkedIn](/docs/img/rit-linkedin-get-viewers.png)
 
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+![Demo Google Docs](/docs/img/rit-googledoc-get-insights.png)
+
 ## Contribute to the repository with your formulas
 
 ### Creating formulas
