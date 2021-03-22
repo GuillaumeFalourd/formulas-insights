@@ -1,0 +1,16 @@
+{
+  "dockerImageBuilder": "ritclizup/rit-python3-builder",
+  "inputs": [
+    {
+      "label": "Google Doc URL: ",
+      "name": "rit_gdoc_url",
+      "required": true,
+      "type": "text",
+      "cache": {
+        "active": true,
+        "newLabel": "Type new value. ",
+        "qty": 3
+      }
+    }
+  ]
+}
