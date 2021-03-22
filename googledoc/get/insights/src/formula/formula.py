@@ -7,12 +7,13 @@ import sys
 import httpx
 
 def run(doc_link):
-    print("\033[1m \033[95m 🔎 Getting Google Document insights...\033[0m")
+    print("\033[1m\033[95m🔎 Getting Google Document insights...\033[0m")
     doc_id = ''.join([x for x in doc_link.split("?")[0].split("/") if len(x) == 44])
     if doc_id:
-        print(f"\nDocument ID : {doc_id}\n")
+        print(f"\n\033[1m✅ Document ID:\033[0m {doc_id}\n")
     else:
-        exit("\nDocument ID not found.\nPlease make sure you have something that looks like this in your link :\1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms")
+        print(f"\n\033[91m❌ Document ID not found.\nPlease make sure you have something that looks like this in your link :\1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms\033[0m")
+        exit()
 
     headers = {"X-Origin": "https://drive.google.com"}
     client = httpx.Client(headers=headers)
@@ -22,14 +23,14 @@ def run(doc_link):
     req = client.get(url)
     
     if "File not found" in str(req.text):
-        print("This file does not exist or is not public")
+        print("\033[91m❌ This file does not exist or is not public\033[0m")
         exit()
-    
+
     if "rateLimitExceeded" in req.text:
         for i in range(0,5):
             req = client.get(url)
             if "rateLimitExceeded" in req.text and i == 4:
-                print("Rate Limit Exceeded. Try again later.")
+                print("\033[91m❌ Rate Limit Exceeded. Try again later.\033[0m")
                 exit()
             else:
                 continue
@@ -41,8 +42,8 @@ def run(doc_link):
     created_date = datetime.strptime(data["createdDate"], '%Y-%m-%dT%H:%M:%S.%fz')
     modified_date = datetime.strptime(data["modifiedDate"], '%Y-%m-%dT%H:%M:%S.%fz')
 
-    print(f"[+] Creation date : {created_date.strftime('%Y/%m/%d %H:%M:%S')} (UTC)")
-    print(f"[+] Last edit date : {modified_date.strftime('%Y/%m/%d %H:%M:%S')} (UTC)")
+    print(f"➡️  Creation date : {created_date.strftime('%Y/%m/%d %H:%M:%S')} (UTC)")
+    print(f"➡️  Last edit date : {modified_date.strftime('%Y/%m/%d %H:%M:%S')} (UTC)")
 
     # Permissions
     user_permissions = []
@@ -62,17 +63,17 @@ def run(doc_link):
         elif permission["role"] == "owner":
             owner = permission
 
-    print("\nPublic permissions :")
+    print("\n\033[1m✅ Public permissions:\033[0m")
     for permission in public_permissions:
         print(f"- {permission}")
 
     if public_permissions != user_permissions:
-        print("[+] You have special permissions :")
+        print("\033[1m⭐️ You have special permissions:\033[0m")
         for permission in user_permissions:
             print(f"- {permission}")
 
     if owner:
-        print("\n[+] Owner found !\n")
-        print(f"Name : {owner['name']}")
-        print(f"Email : {owner['emailAddress']}")
-        print(f"Google ID : {owner['id']}")
+        print("\n\033[1m✅ Owner found!\033[0m")
+        print(f"- Name : {owner['name']}")
+        print(f"- Email : {owner['emailAddress']}")
+        print(f"- Google ID : {owner['id']}")
