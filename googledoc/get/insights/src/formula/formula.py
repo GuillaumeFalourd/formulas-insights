@@ -23,6 +23,7 @@ def run(doc_link):
     
     if "File not found" in str(req.text):
         print("This file does not exist or is not public")
+        exit()
     
     if "rateLimitExceeded" in req.text:
         for i in range(0,5):
