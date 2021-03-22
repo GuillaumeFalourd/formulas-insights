@@ -2,7 +2,7 @@
 
 ## References
 
-This formula as been implemented base on [https://github.com/Malfrats/xeuledoc](https://github.com/Malfrats/xeuledoc)
+This formula as been implemented based on [https://github.com/Malfrats/xeuledoc](https://github.com/Malfrats/xeuledoc)
 
 ## Command
 
@@ -12,7 +12,7 @@ rit googledoc get insights
 
 ## Description
 
-A formula to fetch information about any public Google document.
+A formula to fetch information about any **public** Google document.
 It's working on :
 
 - Google Docs
