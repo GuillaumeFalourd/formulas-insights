@@ -30,7 +30,11 @@ Finally, you can check if the repository has been imported correctly by executin
 
 = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-![Demo LinkedIn](/docs/img/rit-linkedin-get-viewers.png)
+![Demo LinkedIn Viewers](/docs/img/rit-linkedin-get-viewers.png)
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+![Demo Linkedin Jobs](/docs/img/rit-linkedin-search-jobs.png)
 
 = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
