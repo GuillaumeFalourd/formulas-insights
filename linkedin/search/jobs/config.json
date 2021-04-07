@@ -1,0 +1,29 @@
+{
+  "dockerImageBuilder": "ritclizup/rit-python3-builder",
+  "inputs": [
+    {
+      "label": "Job City: ",
+      "name": "rit_job_city",
+      "required": true,
+      "tutorial": "The city when you want to get jobs from.",
+      "type": "text",
+      "cache": {
+        "active": true,
+        "newLabel": "Type new value. ",
+        "qty": 3
+      }
+    },
+    {
+      "label": "Job Title: ",
+      "name": "rit_job_title",
+      "required": true,
+      "tutorial": "The title of the job profile you're looking for.",
+      "type": "text",
+      "cache": {
+        "active": true,
+        "newLabel": "Type new value. ",
+        "qty": 3
+      }
+    }
+  ]
+}
