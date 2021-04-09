@@ -51,7 +51,7 @@ def scrape_write(profession, city, links, send_email, email_receiver):
         csv_filename = f'{my_job}_{city}_{current_date_format_string}.csv'
         
         with open(csv_filename, 'w', encoding='utf-8') as f:
-            headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industries']
+            headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industry']
             write = csv.writer(f, dialect='excel')
             write.writerow(headers)
 

@@ -10,7 +10,7 @@ rit linkedin search jobs
 
 Formula using webscraping on LinkedIn public pages to create a `.csv` file with datas related to the jobs such:
 
-- Link
+- Source Link
 - Organization
 - Job Title
 - Location
@@ -21,10 +21,11 @@ Formula using webscraping on LinkedIn public pages to create a `.csv` file with 
 - Job Function
 - Industry
 
-To do so, the formula just needs 2 inputs:
+To do so, the formula just needs 3 inputs:
 
 - Job City
 - Job Title
+- If you want to receiver a notification by mail or not
 
 ## Demo
 
