@@ -6,10 +6,13 @@ import os
 import argparse
 import json
 import datetime
+import sendgrid
+import base64
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition, ContentId)
 
 from bs4 import BeautifulSoup as soup
 
-def run(city, profession):
+def run(city, profession, send_email, email_receiver):
     colorama.init()
 
     if [city, profession] is not None:
@@ -19,20 +22,20 @@ def run(city, profession):
                 )
             response.raise_for_status()
             page_soup = soup(response.text, 'html.parser')
-            return extract_job_links(profession, city, page_soup)
+            return extract_job_links(profession, city, page_soup, send_email, email_receiver)
         
         except requests.HTTPError as err:
             print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
 
-def extract_job_links(profession, city, cursor):
+def extract_job_links(profession, city, cursor, send_email, email_receiver):
     job_links = []
     for res_card in cursor.findAll("li", {"class": "result-card"})[0:]:
         for links in res_card.findAll('a', {'class': 'result-card__full-card-link'})[0:]:
             job_links.append(links['href'])
 
-    return scrape_write(profession, city, job_links)
+    return scrape_write(profession, city, job_links, send_email, email_receiver)
 
-def scrape_write(profession, city, links):
+def scrape_write(profession, city, links, send_email, email_receiver):
     try:
         if '-' in profession:
             formatting = [x.capitalize() for x in profession.split('-')]
@@ -117,10 +120,23 @@ def scrape_write(profession, city, links):
             print(colorama.Fore.YELLOW, f'\n🕵️  Written all information in: {csv_filename}', colorama.Style.RESET_ALL)
         
         check_file(csv_filename)
+        
+        if send_email == "yes":
+            """ 
+            To use SENDGRID, 
+            inform RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER 
+            as local variables.
+            """
+            if os.environ.get('RIT_SENDGRID_API_KEY') is not None:
+                print("\n\033[1m🤖 Sending Email...\033[0m")
+                send_mail(csv_filename, my_job, city, email_receiver)
+            else:
+                print("\n\033[1m🤖 SENDRIG not configured...\033[0m")
+                print("\n\033[1m🤖 If you want to send a message when an error occurs, add RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER as local variables.\033[0m")  
     
     except requests.HTTPError as err:
         print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
-
+        
 def get_nums(string):
     a_list = string.split()
     for num in a_list:
@@ -133,3 +149,38 @@ def check_file(filename):
         for data in files:
             if filename == data:
                 print(f"\n\033[1m✅ Successfully generated \033[4m{filename}\033[0m\033[1m file!\033[0m")
+
+
+def send_mail(filename, my_job, city, email_receiver):
+    try:
+        sg = sendgrid.SendGridAPIClient(api_key=os.environ.get("RIT_SENDGRID_API_KEY"))
+        from_email = os.environ.get("RIT_SENDGRID_EMAIL_SENDER")
+        to_email = email_receiver.replace(',', '')
+        subject = f"Linkedin: {my_job} jobs in {city} (Weekly)."
+        content = f"Automated report for {my_job} jobs in {city} generated on {datetime.datetime.now()}."
+        message = Mail(
+            from_email = from_email,
+            to_emails = to_email,
+            subject = subject,
+            html_content = content
+        )
+                                
+        with open(filename, 'rb') as f:
+            data = f.read()
+            f.close()
+        encoded = base64.b64encode(data).decode()
+        attachment = Attachment()
+        attachment.file_content = FileContent(encoded)
+        attachment.file_type = FileType('application/csv')
+        attachment.file_name = FileName(filename)
+        attachment.disposition = Disposition('attachment')
+        attachment.content_id = ContentId('')
+        message.attachment = attachment
+        
+        response = sg.client.mail.send.post(request_body=message.get())
+
+        print(f"\n\033[1m📩 Email sent successfully to {to_email}\033[0m")
+    
+    except Exception as e:
+        print("Error:", e)
+        print("\n\033[1m❌ An error occurred while trying to send the email!\033[0m")

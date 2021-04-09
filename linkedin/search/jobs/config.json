@@ -24,6 +24,26 @@
         "newLabel": "Type new value. ",
         "qty": 3
       }
+    },
+    {
+      "label": "Send the report by mail? (SENDGRID NEEDED)",
+      "name": "rit_send_email",
+      "required": true,
+      "type": "text",
+      "items": [
+        "yes",
+        "no"
+      ]
+    },
+    {
+      "condition": {
+        "variable": "rit_send_email",
+        "operator": "==",
+        "value": "yes"
+      },
+      "label": "Email Address:",
+      "name": "rit_email_receiver",
+      "type": "text"
     }
   ]
 }
