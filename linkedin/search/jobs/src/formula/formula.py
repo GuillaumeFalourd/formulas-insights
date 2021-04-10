@@ -19,7 +19,6 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
         try:
             response = requests.get(
                     f'https://www.linkedin.com/jobs/search/?keywords={profession}&location={city}'
-#                    f'https://www.linkedin.com/jobs/search?keywords={profession}&location={city}&geoId=&trk=homepage-jobseeker_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0'
                 )
             response.raise_for_status()
             page_soup = soup(response.text, 'html.parser')
