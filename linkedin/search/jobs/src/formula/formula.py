@@ -20,7 +20,7 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
     if [city, profession] is not None:
         try:
             response = requests.get(
-                    f'https://www.linkedin.com/jobs/search/?keywords={profession}&location={city}&position=1&pageNum=0'
+                    url = f'https://www.linkedin.com/jobs/search/?keywords={profession}&location={city}&position=1&pageNum=0'
                 )
             response.raise_for_status()
             page_soup = soup(response.text, 'html.parser')
@@ -31,26 +31,36 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
                 for links in res_card.findAll('a', {'class': 'result-card__full-card-link'})[0:]:
                     job_links.append(links['href'])
 
-            return scrape_datas(profession, city, job_links, send_email, email_receiver, sendgrid_api_key, sendgrid_email_sender)
+            if '-' in profession:
+                formatting = [x.capitalize() for x in profession.split('-')]
+                job = ' '.join(formatting)
+            else:
+                job = profession.capitalize()
+
+            # Create filename according to inputs and date
+            current_date = datetime.datetime.now()
+            current_date_format = current_date.strftime("%m-%d-%Y-%Hh%M")
+            current_date_format_string = str(current_date_format)
+            csv_filename = f'{job}_{city}_{current_date_format_string}.csv'
+
+            generate_csv_file(csv_filename, job, city, job_links)
+            check_csv_file(csv_filename)
+
+            if send_email == "yes":
+                if sendgrid_api_key is not None:
+                    print("\n\033[1m🤖 Sending Email...\033[0m")
+                    send_mail(csv_filename, job, city, email_receiver, sendgrid_api_key, sendgrid_email_sender)
+                else:
+                    print("\n\033[1m🤖 SENDRIG not configured...\033[0m")
+                    print("\n\033[1m🤖 If you want to send a message when an error occurs, add RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER as local variables.\033[0m")  
 
         except requests.HTTPError as err:
             print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
 
 
-def scrape_datas(profession, city, links, send_email, email_receiver, sendgrid_api_key, sendgrid_email_sender):
+def generate_csv_file(csv_filename, job, city, links):
     try:
-        if '-' in profession:
-            formatting = [x.capitalize() for x in profession.split('-')]
-            my_job = ' '.join(formatting)
-        else:
-            my_job = profession.capitalize()
-
-        print(colorama.Fore.YELLOW, f'\n🕵️  There are {len(links)} available {my_job} jobs in {city.capitalize()}.\n', colorama.Style.RESET_ALL)
-
-        current_date = datetime.datetime.now()
-        current_date_format = current_date.strftime("%m-%d-%Y-%Hh%M")
-        current_date_format_string = str(current_date_format)
-        csv_filename = f'{my_job}_{city}_{current_date_format_string}.csv'
+        print(colorama.Fore.YELLOW, f'\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n', colorama.Style.RESET_ALL)
 
         with open(csv_filename, 'w', encoding='utf-8') as f:
             headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industry']
@@ -61,7 +71,7 @@ def scrape_datas(profession, city, links, send_email, email_receiver, sendgrid_a
                 sleep(randint(1, 3))
                 page_req = requests.get(
                     url = job_link,
-                    headers = {'User-agent': f'{my_job}_{city} bot'}
+                    headers = {'User-agent': f'{job}_{city} bot'}
                     )
                 page_req.raise_for_status()
 
@@ -71,6 +81,7 @@ def scrape_datas(profession, city, links, send_email, email_receiver, sendgrid_a
 
                 # Topcard scraping
                 for content in job_soup.findAll('div', {'class': 'topcard__content-left'})[0:]:
+
                     # Scraping Organization Names
                     orgs = {'Default-Org': [org.text for org in content.findAll('a', {'class': 'topcard__org-name-link topcard__flavor--black-link'})],
                             'Flavor-Org': [org.text for org in content.findAll('span', {'class': 'topcard__flavor'})]}
@@ -125,21 +136,6 @@ def scrape_datas(profession, city, links, send_email, email_receiver, sendgrid_a
 
             print(colorama.Fore.YELLOW, f'\n🕵️  Written all information in: {csv_filename}', colorama.Style.RESET_ALL)
 
-        check_file(csv_filename)
-
-        if send_email == "yes":
-            """
-            To use SENDGRID,
-            inform RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER
-            as local variables.
-            """
-            if sendgrid_api_key is not None:
-                print("\n\033[1m🤖 Sending Email...\033[0m")
-                send_mail(csv_filename, my_job, city, email_receiver, sendgrid_api_key, sendgrid_email_sender)
-            else:
-                print("\n\033[1m🤖 SENDRIG not configured...\033[0m")
-                print("\n\033[1m🤖 If you want to send a message when an error occurs, add RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER as local variables.\033[0m")  
-
     except requests.HTTPError as err:
         print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
 
@@ -151,7 +147,7 @@ def get_nums(string):
             return num
 
 
-def check_file(filename):
+def check_csv_file(filename):
     for root, dirs, files in os.walk(f'{os.getcwd()}'):
         dirs = dirs
         for data in files:
@@ -159,15 +155,15 @@ def check_file(filename):
                 print(f"\n\033[1m✅ Successfully generated \033[4m{filename}\033[0m\033[1m file!\033[0m")
 
 
-def send_mail(filename, my_job, city, email_receiver, sendgrid_api_key, sendgrid_email_sender):
+def send_mail(filename, job, city, email_receiver, sendgrid_api_key, sendgrid_email_sender):
     try:
         sg = sendgrid.SendGridAPIClient(api_key=sendgrid_api_key)
 
         message = Mail(
             from_email = sendgrid_email_sender,
             to_emails = email_receiver.replace(',', ''),
-            subject = f"LinkedIn: {my_job} jobs in {city} (Weekly).",
-            html_content = f"Automated report for {my_job} jobs in {city} generated on {datetime.datetime.now()}."
+            subject = f"LinkedIn: {job} jobs in {city} (Weekly).",
+            html_content = f"Automated report for {job} jobs in {city} generated on {datetime.datetime.now()}."
         )
 
         with open(filename, 'rb') as f:
