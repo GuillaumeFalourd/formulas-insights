@@ -9,8 +9,6 @@ import datetime
 import sendgrid
 import base64
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition, ContentId)
-from random import randint
-from time import sleep
 
 from bs4 import BeautifulSoup as soup
 
@@ -68,7 +66,6 @@ def generate_csv_file(csv_filename, job, city, links):
             write.writerow(headers)
 
             for job_link in links:
-                sleep(randint(1, 3))
                 page_req = requests.get(
                     url = job_link,
                     headers = {'User-agent': f'{job}_{city} bot'}
