@@ -44,6 +44,26 @@
       "label": "Email Address:",
       "name": "rit_email_receiver",
       "type": "text"
+    },
+    {
+      "condition": {
+        "variable": "rit_send_email",
+        "operator": "==",
+        "value": "yes"
+      },
+      "label": "Sendgrid API Key:",
+      "name": "rit_sendgrid_api_key",
+      "type": "text"
+    },
+    {
+      "condition": {
+        "variable": "rit_send_email",
+        "operator": "==",
+        "value": "yes"
+      },
+      "label": "Sengrid Email Sender Address:",
+      "name": "rit_sendgrid_email_sender",
+      "type": "text"
     }
   ]
 }
