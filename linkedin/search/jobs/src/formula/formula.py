@@ -113,7 +113,10 @@ def scrape_write(profession, city, links, send_email, email_receiver):
 
                 # Criteria scraping
                 for criteria in job_soup.findAll('span', {'class': 'job-criteria__text job-criteria__text--criteria'})[:4]:
-                    my_data.append(criteria.text)
+                    if criteria.text is not None or not "":
+                        my_data.append(criteria.text)
+                    else:
+                        my_data.append("-")
 
                 write.writerows([my_data])
             
