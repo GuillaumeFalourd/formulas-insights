@@ -58,84 +58,88 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
 
 def generate_csv_file(csv_filename, job, city, links):
     try:
-        print(colorama.Fore.YELLOW, f'\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n', colorama.Style.RESET_ALL)
+        if len(links) == 0:
+            print(colorama.Fore.ORANGE, f"\n⚠️  Couldn't extract job links list from LinkedIn, try again later! {err}", colorama.Style.RESET_ALL)
+        
+        else:
+            print(colorama.Fore.YELLOW, f'\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n', colorama.Style.RESET_ALL)
 
-        with open(csv_filename, 'w', encoding='utf-8') as f:
-            headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industry']
-            write = csv.writer(f, dialect='excel')
-            write.writerow(headers)
+            with open(csv_filename, 'w', encoding='utf-8') as f:
+                headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industry']
+                write = csv.writer(f, dialect='excel')
+                write.writerow(headers)
 
-            for job_link in links:
-                page_req = requests.get(
-                    url = job_link,
-                    headers = {'User-agent': f'{job}_{city} bot'}
-                    )
-                page_req.raise_for_status()
+                for job_link in links:
+                    page_req = requests.get(
+                        url = job_link,
+                        headers = {'User-agent': f'{job}_{city} bot'}
+                        )
+                    page_req.raise_for_status()
 
-                # Parse HTML
-                job_soup = soup(page_req.text, 'html.parser')
-                my_data = [job_link]
+                    # Parse HTML
+                    job_soup = soup(page_req.text, 'html.parser')
+                    my_data = [job_link]
 
-                # Topcard scraping
-                for content in job_soup.findAll('div', {'class': 'topcard__content-left'})[0:]:
+                    # Topcard scraping
+                    for content in job_soup.findAll('div', {'class': 'topcard__content-left'})[0:]:
 
-                    # Scraping Organization Names
-                    orgs = {'Default-Org': [org.text for org in content.findAll('a', {'class': 'topcard__org-name-link topcard__flavor--black-link'})],
-                            'Flavor-Org': [org.text for org in content.findAll('span', {'class': 'topcard__flavor'})]}
+                        # Scraping Organization Names
+                        orgs = {'Default-Org': [org.text for org in content.findAll('a', {'class': 'topcard__org-name-link topcard__flavor--black-link'})],
+                                'Flavor-Org': [org.text for org in content.findAll('span', {'class': 'topcard__flavor'})]}
 
-                    if orgs['Default-Org'] == []:
-                        org = orgs['Flavor-Org'][0]
-                        my_data.append(org)
-                    else:
-                        for org in orgs['Default-Org']:
+                        if orgs['Default-Org'] == []:
+                            org = orgs['Flavor-Org'][0]
                             my_data.append(org)
+                        else:
+                            for org in orgs['Default-Org']:
+                                my_data.append(org)
 
-                    # Scraping Job Title
-                    for title in content.findAll('h1', {'class': 'topcard__title'})[0:]:
-                        print(colorama.Fore.GREEN,
-                                f'📌 {title.text}',
-                                colorama.Style.RESET_ALL,
-                                colorama.Fore.YELLOW,
-                                f'- {org}',
-                                colorama.Style.RESET_ALL)
-                        my_data.append(title.text.replace(',', '.'))
+                        # Scraping Job Title
+                        for title in content.findAll('h1', {'class': 'topcard__title'})[0:]:
+                            print(colorama.Fore.GREEN,
+                                    f'📌 {title.text}',
+                                    colorama.Style.RESET_ALL,
+                                    colorama.Fore.YELLOW,
+                                    f'- {org}',
+                                    colorama.Style.RESET_ALL)
+                            my_data.append(title.text.replace(',', '.'))
 
-                    for location in content.findAll('span', {'class': 'topcard__flavor topcard__flavor--bullet'})[0:]:
-                        my_data.append(location.text.replace(',', '.'))
+                        for location in content.findAll('span', {'class': 'topcard__flavor topcard__flavor--bullet'})[0:]:
+                            my_data.append(location.text.replace(',', '.'))
 
-                    # Scraping Job Time Posted
-                    posts = {'Old': [posted.text for posted in content.findAll('span', {'class': 'topcard__flavor--metadata posted-time-ago__text'})],
-                            'New': [posted.text for posted in content.findAll('span', {'class': 'topcard__flavor--metadata posted-time-ago__text posted-time-ago__text--new'})]}
+                        # Scraping Job Time Posted
+                        posts = {'Old': [posted.text for posted in content.findAll('span', {'class': 'topcard__flavor--metadata posted-time-ago__text'})],
+                                'New': [posted.text for posted in content.findAll('span', {'class': 'topcard__flavor--metadata posted-time-ago__text posted-time-ago__text--new'})]}
 
-                    if posts['New'] == []:
-                        for text in posts['Old']:
-                            my_data.append(text)
-                    else:
-                        for text in posts['New']:
-                            my_data.append(text)
+                        if posts['New'] == []:
+                            for text in posts['Old']:
+                                my_data.append(text)
+                        else:
+                            for text in posts['New']:
+                                my_data.append(text)
 
-                    # Scraping Number of Applicants Hired
-                    applicants = {'More-Than': [applicant.text for applicant in content.findAll('figcaption', {'class': 'num-applicants__caption'})],
-                                'Current': [applicant.text for applicant in content.findAll('span', {'class': 'topcard__flavor--metadata topcard__flavor--bullet num-applicants__caption'})]}
+                        # Scraping Number of Applicants Hired
+                        applicants = {'More-Than': [applicant.text for applicant in content.findAll('figcaption', {'class': 'num-applicants__caption'})],
+                                    'Current': [applicant.text for applicant in content.findAll('span', {'class': 'topcard__flavor--metadata topcard__flavor--bullet num-applicants__caption'})]}
 
-                    if applicants['Current'] == []:
-                        for applicant in applicants['More-Than']:
-                            my_data.append(f'{get_nums(applicant)}+ Applicants')
-                    else:
-                        for applicant in applicants['Current']:
-                            my_data.append(f'{get_nums(applicant)} Applicants')
+                        if applicants['Current'] == []:
+                            for applicant in applicants['More-Than']:
+                                my_data.append(f'{get_nums(applicant)}+ Applicants')
+                        else:
+                            for applicant in applicants['Current']:
+                                my_data.append(f'{get_nums(applicant)} Applicants')
 
-                # Criteria scraping
-                for criteria in job_soup.findAll('span', {'class': 'job-criteria__text job-criteria__text--criteria'})[:4]:
-                    if criteria.text is not None or not "":
-                        my_data.append(criteria.text)
-                    else:
-                        my_data.append("-")
+                    # Criteria scraping
+                    for criteria in job_soup.findAll('span', {'class': 'job-criteria__text job-criteria__text--criteria'})[:4]:
+                        if criteria.text is not None or not "":
+                            my_data.append(criteria.text)
+                        else:
+                            my_data.append("-")
 
-                write.writerows([my_data])
+                    write.writerows([my_data])
 
-            print(colorama.Fore.YELLOW, f'\n🕵️  Written all information in: {csv_filename}', colorama.Style.RESET_ALL)
-
+                print(colorama.Fore.YELLOW, f'\n🕵️  Written all information in: {csv_filename}', colorama.Style.RESET_ALL)
+                
     except requests.HTTPError as err:
         print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
 
