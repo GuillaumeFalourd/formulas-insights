@@ -6,8 +6,8 @@ def Run(insightType, contribution):
     input_json = json.dumps({'contribution': contribution})
     
     if insightType == "ZupIT":
-        stdin_cmd = f"echo '{input_json}' | rit github get zup-insights --stdin"
-        # input_flag_cmd = 'rit github get zup-insights --contribution={}'.format(contribution)
+        stdin_cmd = f"rit github get zup-insights --stdin"
+        # input_flag_cmd = 'rit github get zup-insights'
 
     elif insightType == "ZupIT - Beagle":
         stdin_cmd = f"echo '{input_json}' | rit github get beagle-insights --stdin"
