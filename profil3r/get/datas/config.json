@@ -1,0 +1,12 @@
+{
+  "dockerImageBuilder": "ritclizup/rit-python3-builder",
+  "inputs": [
+    {
+      "label": "Fullname: ",
+      "name": "rit_fullname",
+      "required": true,
+      "tutorial": "The fullname to check",
+      "type": "text"
+    }
+  ]
+}

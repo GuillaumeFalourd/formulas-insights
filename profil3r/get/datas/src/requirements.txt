@@ -1,0 +1,4 @@
+pwnedpasswords
+requests
+PyInquirer
+jinja2
