@@ -40,6 +40,10 @@ Finally, you can check if the repository has been imported correctly by executin
 
 ![Demo Google Docs](/docs/img/rit-googledoc-get-insights.png)
 
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+![Demo Profil3r 1.3.3](/docs/img/rit-profil3r-get-datas.png)
+
 ## Contribute to the repository with your formulas
 
 ### Creating formulas
