@@ -52,8 +52,7 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
                     print("\n\033[1m🤖 If you want to send a message when an error occurs, add RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER as local variables.\033[0m")  
 
         except requests.HTTPError as err:
-            print(f'\033[0;31m❌ Something went wrong! {err}\033[0m')
-
+            print(f'\033[0;31m❌ Something went wrong!\033[0m', err)
 
 def generate_csv_file(csv_filename, job, city, links):
     try:
@@ -143,7 +142,7 @@ def generate_csv_file(csv_filename, job, city, links):
                 print(f'\033[1;33m\n🕵️  Written all information in: {csv_filename}\033[0m')
                 
     except requests.HTTPError as err:
-        print(f'\033[0;31m❌ Something went wrong! {err}\033[0m')
+        print(f'\033[0;31m❌ Something went wrong!\033[0m', err)
 
 
 def get_nums(string):
