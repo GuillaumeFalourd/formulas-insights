@@ -8,6 +8,8 @@ import json
 import datetime
 import sendgrid
 import base64
+import time
+
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition, ContentId)
 
 from bs4 import BeautifulSoup as soup
@@ -70,11 +72,19 @@ def generate_csv_file(csv_filename, job, city, links):
                 write.writerow(headers)
 
                 for job_link in links:
-                    page_req = requests.get(
-                        url = job_link,
-                        headers = {'User-agent': f'{job}_{city} bot'}
-                        )
-                    page_req.raise_for_status()
+                    for retry in range(3):
+                        time.sleep(10)
+                        page_req = requests.get(
+                            url = job_link,
+                            headers = {'User-agent': f'{job}_{city} bot'}
+                            )
+                        if page_req.status_code == "429":
+                            change_ip(random.randint(1, 30))
+                            time.sleep(10)
+                            continue
+                        else:
+                            page_req.raise_for_status()
+                            break
 
                     # Parse HTML
                     job_soup = soup(page_req.text, 'html.parser')
@@ -189,3 +199,12 @@ def send_mail(filename, job, city, email_receiver, sendgrid_api_key, sendgrid_em
     except Exception as e:
         print("Error:", e)
         print("\n\033[1m❌ An error occurred while trying to send the email!\033[0m")
+
+def change_ip(number):
+    print("Current IP Address")
+    os.system('sudo hostname -I')
+    os.system('sudo ifconfig eth0 down')
+    os.system(f'sudo ifconfig eth0 192.168.1.{number}')
+    os.system('sudo ifconfig eth0 up')
+    print("New IP Address")
+    os.system('sudo hostname -I')
