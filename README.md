@@ -24,23 +24,23 @@ Finally, you can check if the repository has been imported correctly by executin
 
 ![Demo Github](/docs/img/rit-github-insights.png)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+***
 
 ![Demo Github](/docs/img/rit-github-get-user.png)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+***
 
 ![Demo LinkedIn Viewers](/docs/img/rit-linkedin-get-viewers.png)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+***
 
 ![Demo Linkedin Jobs](/docs/img/rit-linkedin-search-jobs.png)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+***
 
 ![Demo Google Docs](/docs/img/rit-googledoc-get-insights.png)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+***
 
 ![Demo Profil3r 1.3.3](/docs/img/rit-profil3r-get-datas.png)
 
