@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import requests
-import colorama
 import csv
 import os
 import argparse
@@ -15,8 +14,6 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, File
 from bs4 import BeautifulSoup as soup
 
 def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid_email_sender):
-    colorama.init()
-
     if [city, profession] is not None:
         try:
             response = requests.get(
@@ -55,16 +52,16 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
                     print("\n\033[1m🤖 If you want to send a message when an error occurs, add RIT_SENDGRID_API_KEY and RIT_SENDGRID_EMAIL_SENDER as local variables.\033[0m")  
 
         except requests.HTTPError as err:
-            print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
+            print(f'\033[0;31m❌ Something went wrong! {err}\033[0m')
 
 
 def generate_csv_file(csv_filename, job, city, links):
     try:
         if len(links) == 0:
-            print(colorama.Fore.ORANGE, f"\n⚠️  Couldn't extract job links list from LinkedIn, try again later! {err}", colorama.Style.RESET_ALL)
+            print(f"\033[1;36m\n⚠️  Couldn't extract job links list from LinkedIn, try again later! {err}\033[0m")
         
         else:
-            print(colorama.Fore.YELLOW, f'\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n', colorama.Style.RESET_ALL)
+            print(f'\033[1;33m\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n\033[0m')
 
             with open(csv_filename, 'w', encoding='utf-8') as f:
                 headers = ['Source', 'Organization', 'Job Title', 'Location', 'Posted', 'Applicants Hired', 'Seniority Level', 'Employment Type', 'Job Function', 'Industry']
@@ -106,12 +103,7 @@ def generate_csv_file(csv_filename, job, city, links):
 
                         # Scraping Job Title
                         for title in content.findAll('h1', {'class': 'topcard__title'})[0:]:
-                            print(colorama.Fore.GREEN,
-                                    f'📌 {title.text}',
-                                    colorama.Style.RESET_ALL,
-                                    colorama.Fore.YELLOW,
-                                    f'- {org}',
-                                    colorama.Style.RESET_ALL)
+                            print(f'\033[0;32m📌 {title.text}\033[0m', f'\033[1;33m- {org}\033[0m')
                             my_data.append(title.text.replace(',', '.'))
 
                         for location in content.findAll('span', {'class': 'topcard__flavor topcard__flavor--bullet'})[0:]:
@@ -148,10 +140,10 @@ def generate_csv_file(csv_filename, job, city, links):
 
                     write.writerows([my_data])
 
-                print(colorama.Fore.YELLOW, f'\n🕵️  Written all information in: {csv_filename}', colorama.Style.RESET_ALL)
+                print(f'\033[1;33m\n🕵️  Written all information in: {csv_filename}\033[0m')
                 
     except requests.HTTPError as err:
-        print(colorama.Fore.RED, f'❌ Something went wrong! {err}', colorama.Style.RESET_ALL)
+        print(f'\033[0;31m❌ Something went wrong! {err}\033[0m')
 
 
 def get_nums(string):
