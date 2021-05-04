@@ -30,10 +30,13 @@ def run(city, profession, send_email, email_receiver, sendgrid_api_key, sendgrid
                 print(f"\033[1;36m\n⚠️  Couldn't extract job links list from LinkedIn, try again later!\033[0m")        
             else:
                 print(f'\033[1;33m\n🕵️  There are {len(links)} available {job} jobs in {city.capitalize()}.\n\033[0m')
+                
                 # Extract Datas into a CSV file
                 csv_filename = csv.filename(job, city)
                 csv.generate_file(csv_filename, job, city, job_links)
                 csv.check_file(csv_filename)
+                
+                print(f'\033[1;33m\n🕵️  Written all information in: {csv_filename}\033[0m')
 
             if send_email == "yes":
                 if sendgrid_api_key is not None:
