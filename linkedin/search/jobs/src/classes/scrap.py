@@ -73,6 +73,13 @@ def get_datas(job, city, job_link):
         my_data.append(criteria.text)
 
     print("Datas:", my_data)
+    
+    if len(my_data) < 10:
+        fill_number = 10 - len(my_data)
+        for i in range(0, fill_number):
+            my_data.append('')
+            i += 1
+    
     return my_data
 
 def get_nums(string):
