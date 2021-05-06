@@ -15,6 +15,7 @@ def get_datas(job, city, job_link):
                 headers = {'User-agent': f'{job}_{city} bot'}
                 )
             if page_req.status_code == "429":
+                print(f"\033[1;36m\n⚠️  Too many requests - Retrying with other IP...\033[0m")
                 change_ip(random.randint(1, 30))
                 time.sleep(3)
                 continue
