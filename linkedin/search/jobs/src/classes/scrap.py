@@ -81,7 +81,7 @@ def get_datas(job, city, job_link):
         else:
             print(f"\033[1;36m⚠️  Saving (only) the job link on the CSV file.\033[0m")
 
-        print("\033[0;34mExtracted Datas:\033[0m", job_datas)
+        print(f"\033[0;34mExtracted Datas: {job_datas} \033[0m")
         
         if len(job_datas) < 10:
             fill_number = 10 - len(job_datas)
