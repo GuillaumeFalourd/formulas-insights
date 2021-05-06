@@ -6,7 +6,7 @@ import time
 from bs4 import BeautifulSoup as soup
 
 def get_datas(job, city, job_link):
-    my_data = [job_link]
+    job_datas = [job_link]
     try:
         for retry in range(5):
             time.sleep(5)
@@ -27,7 +27,7 @@ def get_datas(job, city, job_link):
                     time.sleep(3)
                     continue
                 else:
-                    print(f"⚠️  Couldn't retrieve all datas for the job link: {job_link}")
+                    print(f"\033[1;36m\n⚠️  Couldn't retrieve all datas for the job link: {job_link}\033[0m")
                     break
 
         if len(contents) != 0:
@@ -40,18 +40,18 @@ def get_datas(job, city, job_link):
 
                 if orgs['Default-Org'] == []:
                     org = orgs['Flavor-Org'][0]
-                    my_data.append(org)
+                    job_datas.append(org)
                 else:
                     for org in orgs['Default-Org']:
-                        my_data.append(org)
+                        job_datas.append(org)
 
                 # Scraping Job Title
                 for title in content.findAll('h1', {'class': 'topcard__title'})[0:]:
                     print(f'\033[0;32m📌 {title.text}\033[0m', f'\033[1;33m- {org}\033[0m')
-                    my_data.append(title.text.replace(',', '.'))
+                    job_datas.append(title.text.replace(',', '.'))
 
                 for location in content.findAll('span', {'class': 'topcard__flavor topcard__flavor--bullet'})[0:]:
-                    my_data.append(location.text.replace(',', '.'))
+                    job_datas.append(location.text.replace(',', '.'))
 
                 # Scraping Job Time Posted
                 posts = {'Old': [posted.text for posted in content.findAll('span', {'class': 'topcard__flavor--metadata posted-time-ago__text'})],
@@ -59,10 +59,10 @@ def get_datas(job, city, job_link):
 
                 if posts['New'] == []:
                     for text in posts['Old']:
-                        my_data.append(text)
+                        job_datas.append(text)
                 else:
                     for text in posts['New']:
-                        my_data.append(text)
+                        job_datas.append(text)
 
                 # Scraping Number of Applicants Hired
                 applicants = {'More-Than': [applicant.text for applicant in content.findAll('figcaption', {'class': 'num-applicants__caption'})],
@@ -70,27 +70,29 @@ def get_datas(job, city, job_link):
 
                 if applicants['Current'] == []:
                     for applicant in applicants['More-Than']:
-                        my_data.append(f'{get_nums(applicant)}+ Applicants')
+                        job_datas.append(f'{get_nums(applicant)}+ Applicants')
                 else:
                     for applicant in applicants['Current']:
-                        my_data.append(f'{get_nums(applicant)} Applicants')
+                        job_datas.append(f'{get_nums(applicant)} Applicants')
 
             # Criteria scraping
             for criteria in job_soup.findAll('span', {'class': 'job-criteria__text job-criteria__text--criteria'})[:4]:
-                my_data.append(criteria.text)
+                job_datas.append(criteria.text)
+        else:
+            print(f"\033[1;36m⚠️  Saving (only) the job link on the CSV file.\033[0m")
 
-        print("Datas:", my_data)
+        print("\033[0;34mExtracted Datas:\033[0m", job_datas)
         
-        if len(my_data) < 10:
-            fill_number = 10 - len(my_data)
+        if len(job_datas) < 10:
+            fill_number = 10 - len(job_datas)
             for i in range(0, fill_number):
-                my_data.append('')
+                job_datas.append('')
                 i += 1
                     
     except requests.HTTPError as err:
         print(f'\033[0;31m❌ Something went wrong!\033[0m', err)
         
-    return my_data
+    return job_datas
 
 def get_nums(string):
     a_list = string.split()
