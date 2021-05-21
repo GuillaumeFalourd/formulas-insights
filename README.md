@@ -1,3 +1,5 @@
+[![Security Pipeline](https://github.com/GuillaumeFalourd/formulas-insights/actions/workflows/security_pipeline.yml/badge.svg)](https://github.com/GuillaumeFalourd/formulas-insights/actions/workflows/security_pipeline.yml)
+
 # Formulas Insights
 
 ![title](https://user-images.githubusercontent.com/22433243/119176109-11d8e600-ba41-11eb-8ed7-c917ab061e56.png)
