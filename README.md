@@ -1,6 +1,6 @@
-# Ritchie Formulas Repository - Insights
+# Formulas Insights
 
-![Rit banner](/docs/img/ritchie-banner.png)
+![title](https://user-images.githubusercontent.com/22433243/119176109-11d8e600-ba41-11eb-8ed7-c917ab061e56.png)
 
 ## Documentation
 
