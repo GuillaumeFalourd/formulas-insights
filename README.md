@@ -70,3 +70,18 @@ and commit your implementation: `git commit -m '<commit_message>`
 
 - [Contribute to Ritchie community](https://github.com/ZupIT/ritchie-formulas/blob/master/CONTRIBUTING.md)
 
+## Similar contents
+
+If you want to see similar formulas repositories:
+
+- [formulas-aws](https://github.com/GuillaumeFalourd/formulas-aws): Repository with formulas interacting with AWS.
+
+<img width="953" alt="title" src="https://user-images.githubusercontent.com/22433243/117589694-889ce780-b101-11eb-84fa-b197d0b72ee8.png">
+
+- [formulas-games](https://github.com/GuillaumeFalourd/formulas-games): Repository with formulas games (pacman, space invasion, dino-rush, flappy bird...)
+
+![title](https://user-images.githubusercontent.com/22433243/119173001-fd92ea00-ba3c-11eb-9314-bad231c0bbc3.png)
+
+- [formulas-python](https://github.com/GuillaumeFalourd/formulas-python): Repository with Python formulas with detection or recognition tools.
+
+<img width="950" alt="title" src="https://user-images.githubusercontent.com/22433243/117589577-bdf50580-b100-11eb-9c02-5ba95ab35d89.png">
