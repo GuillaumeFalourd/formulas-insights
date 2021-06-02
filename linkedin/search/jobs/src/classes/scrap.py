@@ -2,6 +2,7 @@
 import requests
 import os
 import time
+import random
 
 from bs4 import BeautifulSoup as soup
 
@@ -9,7 +10,7 @@ def get_datas(job, city, job_link):
     job_datas = [job_link]
     try:
         for retry in range(5):
-            time.sleep(5)
+            time.sleep(random.randint(1, 3))
             page_req = requests.get(
                 url = job_link,
                 headers = {'User-agent': f'{job}_{city} bot'}
@@ -17,7 +18,7 @@ def get_datas(job, city, job_link):
             if page_req.status_code == "429":
                 print(f"\033[1;36m\n⚠️  Too many requests - Retrying with other IP...\033[0m")
                 change_ip(random.randint(1, 30))
-                time.sleep(3)
+                time.sleep(random.randint(1, 3))
                 continue
             else:
                 page_req.raise_for_status()
@@ -25,10 +26,10 @@ def get_datas(job, city, job_link):
                 job_soup = soup(page_req.text, 'html.parser')
                 contents = job_soup.findAll('div', {'class': 'topcard__content-left'})[0:]
                 if len(contents) == 0:
-                    time.sleep(3)
+                    time.sleep(random.randint(1, 3))
                     continue
                 else:
-                    print(f"\033[1;36m\n⚠️  Couldn't retrieve all datas for the job link: {job_link}\033[0m")
+                    # Couldn't retrieve all datas for the job
                     break
 
         if len(contents) != 0:
@@ -48,7 +49,7 @@ def get_datas(job, city, job_link):
 
                 # Scraping Job Title
                 for title in content.findAll('h1', {'class': 'topcard__title'})[0:]:
-                    print(f'\033[0;32m📌 {title.text}\033[0m', f'\033[1;33m- {org}\033[0m')
+                    print(f'\n\033[0;32m📌 {title.text}\033[0m', f'\033[1;33m- {org}\033[0m')
                     job_datas.append(title.text.replace(',', '.'))
 
                 for location in content.findAll('span', {'class': 'topcard__flavor topcard__flavor--bullet'})[0:]:
@@ -80,9 +81,9 @@ def get_datas(job, city, job_link):
             for criteria in job_soup.findAll('span', {'class': 'job-criteria__text job-criteria__text--criteria'})[:4]:
                 job_datas.append(criteria.text)
         else:
-            print(f"\033[1;36m⚠️  Saving (only) the job link on the CSV file.\033[0m")
+            print(f"\n\033[1;36m⚠️  Saving (only) the job link on the CSV file.\033[0m")
 
-        print(f"\033[0;34mExtracted Datas: {job_datas} \033[0m")
+        # print(f"\033[0;34mExtracted Datas: {job_datas} \033[0m")
         
         if len(job_datas) < 10:
             fill_number = 10 - len(job_datas)
