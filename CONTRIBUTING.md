@@ -24,7 +24,7 @@ Ritchie is composed of 3 projects which release at different times.
 **Always base your work on the project's `master` branch, naming your new branch
 according to the following guide :**
 
-![Rit branchs](/docs/img/git-branchs.png)
+![git-branchs](https://user-images.githubusercontent.com/22433243/122411943-8d07bc00-cf5b-11eb-82d1-d287bb8c93ce.png)
 
 **Examples : `feature/name` or `fix/name`**
 
